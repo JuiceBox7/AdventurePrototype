@@ -456,6 +456,7 @@ const game = new Phaser.Game({
         width: 1920,
         height: 1080
     },
+    type: Phaser.AUTO,
     scene: [Intro, FirstFloor, Basement, SecondFloor, ThirdFloor, Balcony, BadEnding, GoodEnding],
     title: "Adventure Game",
 });
