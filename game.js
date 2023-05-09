@@ -7,25 +7,22 @@ class FirstFloor extends AdventureScene {
         this.load.image('door-closed', 'assets/door-closed.png');
         this.load.image('door-open', 'assets/door-open.png');
         this.load.image('chest', 'assets/chest.png');
+        this.load.audio('creak', 'assets/door-creak.mp3');
+        this.load.audio('coin', 'assets/coin.mp3');
     }
 
     onEnter() {
         let chest = this.add.sprite(725, 800, 'chest')
             .setScale(0.5)
 
-        let door1closed = this.add.sprite(425, 550, 'door-closed')
-            .setScale(0.5)
+        let door1closed = this.setClosedDoor('door-closed', 425, 550)
+        let door1open = this.setOpenDoor('door-open', 400, 560)
 
-        let door1open = this.add.sprite(400, 560, 'door-open')
-            .setScale(0.5)
-            .setVisible(false)
+        let door2closed = this.setClosedDoor('door-closed', 1025, 550)
+        let door2open = this.setOpenDoor('door-open', 1000, 560)
 
-        let door2closed = this.add.sprite(1025, 550, 'door-closed')
-            .setScale(0.5)
-
-        let door2open = this.add.sprite(1000, 560, 'door-open')
-            .setScale(0.5)
-            .setVisible(false)
+        let creak = this.sound.add('creak')
+        let coin = this.sound.add('coin')
 
         let door1 = this.add.text(this.w * 0.115, this.w * 0.13, 
             "         \n         \n         \n         \n         \n         \n" + 
@@ -45,6 +42,7 @@ class FirstFloor extends AdventureScene {
 
             .on('pointerdown', () => {
                 this.showMessage("*creak*");
+                creak.play();
                 this.gotoScene('secondfloor');
             })
 
@@ -66,6 +64,7 @@ class FirstFloor extends AdventureScene {
 
             .on('pointerdown', () => {
                 this.showMessage("*creak*");
+                creak.play();
                 this.gotoScene('basement');
             })
 
@@ -76,6 +75,7 @@ class FirstFloor extends AdventureScene {
             something useful inside'))
             .on('pointerdown', () => {
                 if (!this.hasItem('Silver key')) {
+                    coin.play()
                     this.showMessage('Got a key!')
                     this.gainItem('Silver key')
                     this.tweens.add({
@@ -102,11 +102,17 @@ class Basement extends AdventureScene {
     preload() {
         this.load.image('chest', 'assets/chest.png')
         this.load.image('return', 'assets/go-back.png')
+        this.load.audio('coin', 'assets/coin.mp3');
+        this.load.audio('woosh', 'assets/swoosh.mp3');
     }
 
     onEnter() {
         let chest = this.add.sprite(725, 800, 'chest')
             .setScale(0.5)
+
+        let coin = this.sound.add('coin')
+        let woosh = this.sound.add('woosh')
+            .setVolume(0.5)
 
         let chestinteractive = this.add.text(670, 750, 
             '           \n           \n           \n           \n           ')
@@ -115,6 +121,7 @@ class Basement extends AdventureScene {
             something useful inside'))
             .on('pointerdown', () => {
                 if (!this.hasItem('Gold key')) {
+                    coin.play()
                     this.showMessage('Got a key!')
                     this.gainItem('Gold key')
                     this.tweens.add({
@@ -131,14 +138,16 @@ class Basement extends AdventureScene {
                 }
             })
 
-        let goback = this.add.sprite(175, 990, 'return')
-            .setScale(0.5)
+        let goback = this.backbutton('return')
         
-        let gobackinter = this.add.text(40, 975, '         ')
+        let backbtninter = this.add.text(40, 975, '         ')
             .setFontSize(50)
             .setInteractive()
             .on('pointerover', () => this.showMessage('Go back to previous room?'))
-            .on('pointerdown', () => this.gotoScene('firstfloor'))
+            .on('pointerdown', () => {
+                this.gotoScene('firstfloor')
+                woosh.play()
+            })
 
         this.tweens.add({
             targets: goback,
@@ -159,15 +168,17 @@ class SecondFloor extends AdventureScene {
         this.load.image('door-closed', 'assets/door-closed.png');
         this.load.image('door-open', 'assets/door-open.png');
         this.load.image('return', 'assets/go-back.png')
+        this.load.audio('creak', 'assets/door-creak.mp3');
+        this.load.audio('woosh', 'assets/swoosh.mp3');
     }
 
     onEnter() {
-        let door1closed = this.add.sprite(725, 550, 'door-closed')
-            .setScale(0.5)
+        let door1closed = this.setClosedDoor('door-closed', 725, 550)
+        let door1open = this.setOpenDoor('door-open', 700, 560)
 
-        let door1open = this.add.sprite(700, 560, 'door-open')
-            .setScale(0.5)
-            .setVisible(false)
+        let creak = this.sound.add('creak')
+        let woosh = this.sound.add('woosh')
+            .setVolume(0.5)
 
         let door1 = this.add.text(this.w * 0.315, this.w * 0.13, 
             "         \n         \n         \n         \n         \n         \n" + 
@@ -191,6 +202,7 @@ class SecondFloor extends AdventureScene {
 
             .on('pointerdown', () => {
                 if (this.hasItem("Silver key")) {
+                    creak.play()
                     this.showMessage("*creak*");
                     this.gotoScene('thirdfloor');
                 }
@@ -199,14 +211,16 @@ class SecondFloor extends AdventureScene {
                 }
             })
 
-        let goback = this.add.sprite(175, 990, 'return')
-            .setScale(0.5)
+        let goback = this.backbutton('return')
         
-        let gobackinter = this.add.text(40, 975, '         ')
+        let backbtninter = this.add.text(40, 975, '         ')
             .setFontSize(50)
             .setInteractive()
             .on('pointerover', () => this.showMessage('Go back to previous room?'))
-            .on('pointerdown', () => this.gotoScene('firstfloor'))
+            .on('pointerdown', () => {
+                this.gotoScene('firstfloor')
+                woosh.play()
+            })
 
         this.tweens.add({
             targets: goback,
@@ -227,22 +241,21 @@ class ThirdFloor extends AdventureScene {
         this.load.image('door-closed', 'assets/door-closed.png')
         this.load.image('door-open', 'assets/door-open.png')
         this.load.image('return', 'assets/go-back.png')
+        this.load.audio('creak', 'assets/door-creak.mp3');
+        this.load.audio('woosh', 'assets/swoosh.mp3');
     }
 
     onEnter() {
-        let door1closed = this.add.sprite(425, 550, 'door-closed')
-            .setScale(0.5)
+        let door1closed = this.setClosedDoor('door-closed', 425, 550)
+        let door1open = this.setOpenDoor('door-open', 400, 560)
 
-        let door1open = this.add.sprite(400, 560, 'door-open')
-            .setScale(0.5)
-            .setVisible(false)
+        
+        let door2closed = this.setClosedDoor('door-closed', 1025, 550)
+        let door2open = this.setOpenDoor('door-open', 1000, 560)
 
-        let door2closed = this.add.sprite(1025, 550, 'door-closed')
-            .setScale(0.5)
-
-        let door2open = this.add.sprite(1000, 560, 'door-open')
-            .setScale(0.5)
-            .setVisible(false)
+        let creak = this.sound.add('creak')
+        let woosh = this.sound.add('woosh')
+            .setVolume(0.5)
 
         let door1 = this.add.text(this.w * 0.115, this.w * 0.13, 
             "         \n         \n         \n         \n         \n         \n" + 
@@ -270,12 +283,14 @@ class ThirdFloor extends AdventureScene {
                     this.loseItem('Silver key');
                     if (this.hasItem("Flashlight")) {
                         this.loseItem('Flashlight')
+                        creak.play()
                         this.showMessage("*creak*");
                         this.gotoScene('GoodEnding');
                     }
                     else {
                         this.loseItem("Gold key");
                         this.loseItem('Silver key');
+                        creak.play()
                         this.showMessage("*creak*");
                         this.gotoScene('BadEnding');
                     }
@@ -303,17 +318,20 @@ class ThirdFloor extends AdventureScene {
 
             .on('pointerdown', () => {
                 this.showMessage("*creak*")
+                creak.play()
                 this.gotoScene('balcony')
             })
 
-        let goback = this.add.sprite(175, 990, 'return')
-            .setScale(0.5)
+        let goback = this.backbutton('return')
         
-        let gobackinter = this.add.text(40, 975, '         ')
+        let backbtninter = this.add.text(40, 975, '         ')
             .setFontSize(50)
             .setInteractive()
             .on('pointerover', () => this.showMessage('Go back to previous room?'))
-            .on('pointerdown', () => this.gotoScene('secondfloor'))
+            .on('pointerdown', () => {
+                this.gotoScene('secondfloor')
+                woosh.play()
+            })
 
         this.tweens.add({
             targets: goback,
@@ -334,6 +352,8 @@ class Balcony extends AdventureScene {
         this.load.image('background', 'assets/balcony-backdrop.png')
         this.load.image('chest', 'assets/chest.png')
         this.load.image('return', 'assets/go-back.png')
+        this.load.audio('coin', 'assets/coin.mp3');
+        this.load.audio('woosh', 'assets/swoosh.mp3');
     }
 
     onEnter() {
@@ -342,6 +362,10 @@ class Balcony extends AdventureScene {
         let chest = this.add.sprite(725, 800, 'chest')
             .setScale(0.5)
 
+        let coin = this.sound.add('coin')
+        let woosh = this.sound.add('woosh')
+            .setVolume(0.5)
+
         let chestinteractive = this.add.text(670, 750, 
             '           \n           \n           \n           \n           ')
             .setInteractive()
@@ -349,6 +373,7 @@ class Balcony extends AdventureScene {
             something useful inside'))
             .on('pointerdown', () => {
                 if (!this.hasItem('Flashlight')) {
+                    coin.play()
                     this.showMessage('Got a flaslight!')
                     this.gainItem('Flashlight')
                     this.tweens.add({
@@ -365,14 +390,16 @@ class Balcony extends AdventureScene {
                 }
             })
 
-        let goback = this.add.sprite(175, 990, 'return')
-            .setScale(0.5)
+        let goback = this.backbutton('return')
         
-        let gobackinter = this.add.text(40, 975, '         ')
+        let backbtninter = this.add.text(40, 975, '         ')
             .setFontSize(50)
             .setInteractive()
             .on('pointerover', () => this.showMessage('Go back to previous room?'))
-            .on('pointerdown', () => this.gotoScene('thirdfloor'))
+            .on('pointerdown', () => {
+                this.gotoScene('thirdfloor')
+                woosh.play()
+            })
 
         this.tweens.add({
             targets: goback,

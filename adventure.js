@@ -96,7 +96,7 @@ class AdventureScene extends Phaser.Scene {
     }
 
     gainItem(item) {
-        if (this.inventory.includes(item)) {
+        if (this.hasItem(item)) {
             console.warn('gaining item already held:', item);
             return;
         }
@@ -116,7 +116,7 @@ class AdventureScene extends Phaser.Scene {
     }
 
     loseItem(item) {
-        if (!this.inventory.includes(item)) {
+        if (!this.hasItem(item)) {
             console.warn('losing item not held:', item);
             return;
         }
@@ -142,6 +142,28 @@ class AdventureScene extends Phaser.Scene {
         this.time.delayedCall(this.transitionDuration, () => {
             this.scene.start(key, { inventory: this.inventory });
         });
+    }
+
+    setClosedDoor(door, x, y) {
+        let closeddoor = this.add.sprite(x, y, door)
+            .setScale(0.5)
+        
+        return closeddoor
+    }
+
+    setOpenDoor(door, x, y) {
+        let opendoor = this.add.sprite(x, y, door)
+            .setScale(0.5)
+            .setVisible(false)
+
+        return opendoor
+    }
+
+    backbutton(button) {
+        let backbutton = this.add.sprite(175, 990, button)
+            .setScale(0.5)
+
+        return backbutton
     }
 
     onEnter() {
